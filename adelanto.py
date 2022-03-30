@@ -103,7 +103,7 @@ class WordRelate:
 
         # Your code goes here (~ 2 lines)
         # Make order monotonic to improve performance.
-        self.voc[collection_id] = pd.value_counts(content[collection_id]).sort_index().iloc[0:min(top_freq_words, len(words[collection_id]))]
+        self.voc[collection_id] = pd.value_counts(content[collection_id]).sort_values(ascending = False).iloc[0:min(top_freq_words, len(words[collection_id]))].sort_index()
         # Get inverse index for word vocs
         self.ivoc[collection_id] = pd.Series(voc[collection_id].index, 
                                 index = voc[collection_id].values).sort_index()
