@@ -38,8 +38,8 @@ class WordRelate:
         # -----------------------------------
 
         # Your code goes here (~ 1 - 5 lines)
-        self.words = []
-        self.content = []
+        self.words = {}
+        self.content = {}
         self.voc = {}
         self.ivoc = {}
         self.collections = {}
@@ -291,8 +291,8 @@ class WordRelate:
         # Add texts to the collections.
         # Texts es una lista que tiene listas (Cada una corresponde a un texto) y cada lista tiene listas con las
         # palabras de cada línea
-        self.content = np.array(content)
-        self.words = np.unique(content)
+        self.content[collection_id] = np.array(content)
+        self.words[collection_id] = np.unique(content)
         self.collections[collection_id] = texts
 
 
