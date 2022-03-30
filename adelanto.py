@@ -334,22 +334,22 @@ class WordRelate:
 
 if __name__ == '__main__':
     # Check available collections
+    # Esto ya funciona
     collections = os.listdir(os.path.join('data', 'text_comp', 'texts'))
+
     # Parse arguments
     parser = ArgumentParser()
-    parser.add_argument('--collection',
-                        choices=collections)
+    parser.add_argument('--collection', choices=collections)
     args = parser.parse_args()
     # Read stopwords
-    with open('./data/stop_words/stopwords.txt') as f:
+    with open('./stopwords.txt') as f:
         stopwords = f.read().split('\n')
     # Instantiate WordRelate object
     wc = WordRelate()
     # Read collection argument
     collection = args.collection
-
     # -----------------------------------
-    # TO DO
+    # TODO
     # -----------------------------------
     # 1.- read collection 00
     # 2.- get vocabularies
@@ -365,3 +365,11 @@ if __name__ == '__main__':
     # -----------------------------------
 
     # Your code goes here (~ 7 lines)
+
+    # Read collection 130
+    wc.read_collection(1)
+    wc.get_voc(collection_id=1, sw=stopwords)
+    wc.dist_rep(collection_id=1)
+    wc.ppmi_reweight(collection_id=1)
+    wc.dim_redux(collection_id=1)
+    wc.plot_reps()
