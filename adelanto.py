@@ -194,12 +194,13 @@ class WordRelate:
             matriz = np.delete(matriz, 0, axis=0)
             self.vrm[collection_id] = matriz
 
-    def ppmi_reweight(self, collection_id):
+            
+        def ppmi_reweight(self, collection_id):
         """
         In this section we apply ppmi transformation to vrm
         """
         # -----------------------------------
-        # TODO
+        #
         # Compute the matrix of expected counts to
         # update vrm.
         # expected_i_j = (row_sum_i*col_sum_j)/tot_sum
@@ -207,6 +208,16 @@ class WordRelate:
         # -----------------------------------
 
         # Your code goes here (~ 1 - 4 lines)
+        size = len(self.voc[collection_id])
+        expected = np.zeros((size, size))
+        matriz = self.vrm[collection_id]
+        total = sum(sum(matriz))
+
+        for i in range(size):
+            for j in range(size):
+                suma_i = sum(matriz[i])
+                suma_j = sum(matriz[:, j])
+                expected[i, j] = (suma_i * suma_j)/total
 
         with np.errstate(divide='ignore'):
             log_vals = np.log(self.vrm[collection_id]/expected)
