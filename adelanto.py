@@ -93,37 +93,30 @@ class WordRelate:
         # -----------------------------------
 
         # Your code goes here (~ 2 lines)
-        self.read_collection(collection_id)
         # Primero buscamos todas las palabras y contamos cuantas veces aparecen
         # Luego ordenamos por número de apraciones
         # Luego les damos el indice por orden de apraciones
         # Nos quedamos solo con las primeras 2000 palabras
 
-        aux_dict = {}
-        # Sacamos la lista de libros del id
-        for book in self.collections[collection_id]:
-            for line in book:
-                for word in line:
-                    if word not in sw:
-                        try:
-                            aux_dict[word] += 1
-                        except:
-                            aux_dict[word] = 1
+        self.read_collection(collection_id)
 
-
-        sort_orders = sorted(aux_dict.items(), key=lambda x: x[1], reverse=True)
-        # Agregamos a un diccionario las primeras 10 palabras
-        minSize = min(top_freq_words, len(sort_orders))
-        top_words = {}
-        other_top_words = {}
-        for i in range(minSize):
-            top_words[i] = sort_orders[i][0]
-            other_top_words[sort_orders[i][0]] = i
-
-        # Make order monotonic to improve performance.
-        self.voc[collection_id] =  other_top_words # Your code goes here
-        # Get inverse index for word vocs
-        self.ivoc[collection_id] = top_words # Your code goes here
+        words = np.unique([x for line in [line for book in 
+                                self.collections[collection_id] for 
+                                line in book] for x in line])
+        
+        sort_orders = sorted({x: reduce(lambda i, j: i + 
+                                reduce(lambda l, k: l+k.count(x), j, 0), 
+                                self.collections[collection_id], 0) 
+                                for x in words if x not in sw}.items(), 
+                                key=lambda x: x[1], reverse=True)
+        
+        voc[collection_id] = pd.Series({sort_orders[i][0]:i 
+                                for i in range(min(top_freq_words, 
+                                len(sort_orders)))}).sort_index()
+        
+        ivoc[collection_id] = pd.Series(voc[collection_id].index, 
+                                index = voc[collection_id].values).sort_index()
+        
         print(f'Monotonic index:{self.voc[collection_id].index.is_monotonic}')
 
 
