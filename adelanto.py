@@ -71,7 +71,6 @@ class WordRelate:
 
 
 
-
     def get_voc(self, collection_id, sw, top_freq_words=2000):
         """
         Get a series with the most common words in the collection.
