@@ -101,21 +101,11 @@ class WordRelate:
 
         self.read_collection(collection_id)
 
-        words = np.unique([x for line in [line for book in 
-                                self.collections[collection_id] for 
-                                line in book] for x in line])
-        
-        sort_orders = sorted({x: reduce(lambda i, j: i + 
-                                reduce(lambda l, k: l+k.count(x), j, 0), 
-                                self.collections[collection_id], 0) 
-                                for x in words if x not in sw}.items(), 
-                                key=lambda x: x[1], reverse=True)
-        
-        voc[collection_id] = pd.Series({sort_orders[i][0]:i 
-                                for i in range(min(top_freq_words, 
-                                len(sort_orders)))}).sort_index()
-        
-        ivoc[collection_id] = pd.Series(voc[collection_id].index, 
+        # Your code goes here (~ 2 lines)
+        # Make order monotonic to improve performance.
+        self.voc[collection_id] = pd.value_counts(content[collection_id]).sort_index().iloc[0:min(top_freq_words, len(words[collection_id]))]
+        # Get inverse index for word vocs
+        self.ivoc[collection_id] = pd.Series(voc[collection_id].index, 
                                 index = voc[collection_id].values).sort_index()
         
         print(f'Monotonic index:{self.voc[collection_id].index.is_monotonic}')
