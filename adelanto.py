@@ -111,7 +111,7 @@ class WordRelate:
         print(f'Monotonic index:{self.voc[collection_id].index.is_monotonic}')
 
 
-    def dist_rep(self, collection_id, ws=4):
+        def dist_rep(self, collection_id, ws=4):
         """
         In this function we get the distributed representation of words based on
         cooccurrence along windows of size ws. This is the most
@@ -122,10 +122,18 @@ class WordRelate:
         :return:
          - self.vrm: a vectorized representation of the words
         """
-        voc_size = len(self.voc[collection_id])
-        self.vrm[collection_id] = np.zeros((voc_size, voc_size))
+
+
+        # Hacemos una lista con las palabras más frecuentes
+        words_list = list(self.voc[collection_id].keys())
+
+        # Hacemos un diccionario con ceros para todas las palabras
+        dict_ceros = {}
+
+        for word in words_list:
+            dict_ceros[word] = np.zeros(len(words_list))
+
         for text in self.collections[collection_id]:
-            text = np.array([w for w in text if w in self.voc[collection_id]], dtype=object)
             # -----------------------------------
             # TODO
             # For each word in text, build a window
@@ -147,17 +155,44 @@ class WordRelate:
             # np.array_equal
             # -----------------------------------
 
-            # Your code goes here ( 1 ~ 10 lines)
+            # Qué le vas a hacer a UN texto?
+            for linea in text:
 
-            for word, (related, values) in indexes:
-                # -----------------------------------
-                # TODO
-                # Update the count values in self.vrm.
-                # (10 points)
-                # -----------------------------------
+                # Nos movemos sobre las palabras del renglón
+                for i in range(len(linea)):
 
-                # Your code goes here (1 line)
+                    # Si la palabra está dentro de las más frecuentes la analizamos
+                    if linea[i] in words_list:
 
+                        # Buscamos 4 letras a la derecha y 4 a la izquierda
+                        for k in range(2*ws):
+
+                            # j es el índice para las palabras del lado derecho
+                            j = k + i + 1
+
+                            # m es el índice para las palabras del lado izquierdo
+                            m = i -k -1
+
+                            if m >= 0:
+                                if linea[m] in words_list:
+                                    index = self.voc[collection_id][linea[m]]
+                                    # Si queremos que tome en cuenta la distancia entonces dividimos el 1 entre k+1
+                                    dict_ceros[linea[i]][index] += 1
+
+                            if j < len(linea):
+                                if linea[j] in words_list:
+                                    index = self.voc[collection_id][linea[j]]
+                                    # Si queremos que tome en cuenta la distancia entonces dividimos el 1 entre k+1
+                                    dict_ceros[linea[i]][index] += 1
+
+            # Ahora lo convertimos en una matriz
+            matriz = np.zeros(len(words_list))
+
+            for word in dict_ceros.keys():
+                matriz = np.vstack((matriz, dict_ceros[word]))
+
+            matriz = np.delete(matriz, 0, axis=0)
+            self.vrm[collection_id] = matriz
 
     def ppmi_reweight(self, collection_id):
         """
