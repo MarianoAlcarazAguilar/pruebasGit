@@ -38,6 +38,7 @@ class WordRelate:
         # -----------------------------------
 
         # Your code goes here (~ 1 - 5 lines)
+        self.words = ""
         self.voc = {}
         self.ivoc = {}
         self.collections = {}
@@ -262,6 +263,7 @@ class WordRelate:
         collection_path = os.path.join(self.data_path, collection_id)
         # Read each file in collection
         texts = []
+        content = []
         for file in os.listdir(collection_path):
             file_path = os.path.join(collection_path, file, 'main_text.txt')
             # Take care of gzipped files
@@ -284,10 +286,12 @@ class WordRelate:
             to_delete= '\n'
             lines = [proc_line(f"START {re.sub(r'to_delete', '', x).lower()} END") 
                      for x in lines if len(proc_line(x)) > 2]
+            content += [x for line in lines for x in line]
             texts.append(lines)
         # Add texts to the collections.
         # Texts es una lista que tiene listas (Cada una corresponde a un texto) y cada lista tiene listas con las
         # palabras de cada línea
+        self.words = np.unique(content)
         self.collections[collection_id] = texts
 
 
