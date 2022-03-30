@@ -281,9 +281,9 @@ class WordRelate:
             # -----------------------------------
 
             # Your code goes here (~ 1 - 3 lines)
-            lines = [re.sub(r"\n", "", x).lower() for x in lines]
-            lines = [f"START {x} END" for x in lines]
-            lines = [self.proc_line(x) for x in lines if len(self.proc_line(x)) > 2]
+            to_delete= '\n'
+            lines = [proc_line(f"START {re.sub(r'to_delete', '', x).lower()} END") 
+                     for x in lines if len(proc_line(x)) > 2]
             texts.append(lines)
         # Add texts to the collections.
         # Texts es una lista que tiene listas (Cada una corresponde a un texto) y cada lista tiene listas con las
