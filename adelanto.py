@@ -38,7 +38,8 @@ class WordRelate:
         # -----------------------------------
 
         # Your code goes here (~ 1 - 5 lines)
-        self.words = ""
+        self.words = []
+        self.content = []
         self.voc = {}
         self.ivoc = {}
         self.collections = {}
@@ -258,7 +259,7 @@ class WordRelate:
         print(f'Found {len(predicted_sim)} words to relate in voc. Pearson Correlation: {correlation}')
         return correlation
 
-    def read_collection(self, collection_id):
+    def read_collection(self, collection_id, sw):
         collection_path = os.path.join(self.data_path, collection_id)
         # Read each file in collection
         texts = []
@@ -285,11 +286,12 @@ class WordRelate:
             to_delete= '\n'
             lines = [proc_line(f"START {re.sub(r'to_delete', '', x).lower()} END") 
                      for x in lines if len(proc_line(x)) > 2]
-            content += [x for line in lines for x in line]
+            content += [x for line in lines for x in line if x not in sw]
             texts.append(lines)
         # Add texts to the collections.
         # Texts es una lista que tiene listas (Cada una corresponde a un texto) y cada lista tiene listas con las
         # palabras de cada línea
+        self.content = np.array(content)
         self.words = np.unique(content)
         self.collections[collection_id] = texts
 
